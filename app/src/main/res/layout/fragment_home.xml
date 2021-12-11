@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
 
@@ -14,9 +14,13 @@
         android:layout_height="40dp"
         android:layout_margin="5dp"
         android:background="@drawable/search_bar"
-        android:ems="10"
-        android:hint="Search"
         android:drawableLeft="@drawable/search"
-        android:gravity="center" >
-    </EditText>
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Search"></EditText>
+
+    <ListView
+        android:id="@+id/products"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
