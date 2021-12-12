@@ -44,6 +44,8 @@ public class HomeFragment extends Fragment {
         //TODO: Remove these, it is only for testing
         productList.add(new Product("https://upload.wikimedia.org/wikipedia/commons/e/ed/Gouraud_low.gif", "Product name", 34.3));
         productList.add(new Product("https://upload.wikimedia.org/wikipedia/commons/e/ed/Gouraud_low.gif", "Product name", 34.3));
+        productList.add(new Product("https://upload.wikimedia.org/wikipedia/commons/e/ed/Gouraud_low.gif", "Product name", 34.3));
+        productList.add(new Product("https://upload.wikimedia.org/wikipedia/commons/e/ed/Gouraud_low.gif", "Product name", 34.3));
 
 
 
