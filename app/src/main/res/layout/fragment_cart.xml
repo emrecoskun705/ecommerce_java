@@ -4,19 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.cart.CartFragment">
+    android:orientation="vertical"
+    android:paddingTop="10sp"
+    tools:context=".ui.cart.CartFragment"
+    android:label="My Cart">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <ListView
+        android:id="@+id/cart_product_list"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:divider="@color/white"
+        android:dividerHeight="15sp"
+        android:paddingLeft="15sp"
+        android:paddingTop="20sp"
+        android:paddingRight="15sp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:orientation="horizontal"
+        android:paddingLeft="20sp"
+        android:paddingTop="5sp"
+        android:paddingRight="20sp"
+        android:paddingBottom="5sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/cart_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Total Price: 3452$"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/cart_buy_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Buy" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

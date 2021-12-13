@@ -1,11 +1,7 @@
-package tr.com.emrecoskun.ecommerce_java;
+package tr.com.emrecoskun.ecommerce_java.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +9,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
-
-import java.io.InputStream;
 import java.util.List;
 
+import tr.com.emrecoskun.ecommerce_java.R;
+import tr.com.emrecoskun.ecommerce_java.models.Product;
 import tr.com.emrecoskun.ecommerce_java.utils.DownloadImageTask;
 
-public class ProductAdapter extends BaseAdapter {
-
+public class CartAdapter extends BaseAdapter {
     List<Product> productList;
     private LayoutInflater inflater;
 
-    public ProductAdapter(Activity activity, List<Product> productList) {
+    public CartAdapter(Activity activity, List<Product> productList) {
         this.productList = productList;
         this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -47,29 +41,22 @@ public class ProductAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        View productView;
-        productView = inflater.inflate(R.layout.product, null);
+        View cartProductView;
+        cartProductView = inflater.inflate(R.layout.cart_product, null);
 
-        TextView txtName = (TextView) productView.findViewById(R.id.productName);
-        TextView txtPrice = (TextView) productView.findViewById(R.id.productPrice);
-        ImageView imageView = (ImageView) productView.findViewById(R.id.productImage);
+        TextView productName = (TextView) cartProductView.findViewById(R.id.cart_product_name);
+        TextView productPrice = (TextView) cartProductView.findViewById(R.id.cart_product_price);
+        ImageView productImage = (ImageView) cartProductView.findViewById(R.id.cart_product_image);
+
         Product product = productList.get(i);
-        txtName.setText(product.getName());
-        txtPrice.setText(product.getPrice() + "");
+
+        productName.setText(product.getName());
+        productPrice.setText(product.getPrice() + "");
 //        imageView.setImageBitmap(product.getImage());
 
-        new DownloadImageTask((ImageView) imageView)
+        new DownloadImageTask((ImageView) productImage)
                 .execute(product.getImageUrl());
 
-        return productView;
+        return cartProductView;
     }
 }
-
-
-
-
-
-
-
-
-

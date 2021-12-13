@@ -1,4 +1,4 @@
-package tr.com.emrecoskun.ecommerce_java;
+package tr.com.emrecoskun.ecommerce_java.models;
 
 import android.graphics.Bitmap;
 

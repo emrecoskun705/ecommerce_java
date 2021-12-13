@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,28 +13,43 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import tr.com.emrecoskun.ecommerce_java.R;
+import tr.com.emrecoskun.ecommerce_java.adapters.CartAdapter;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentCartBinding;
+import tr.com.emrecoskun.ecommerce_java.models.Product;
 
 public class CartFragment extends Fragment {
 
     private CartViewModel cartViewModel;
     private FragmentCartBinding binding;
 
+    private List<Product> cartProductList = new ArrayList<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+
+
+
         cartViewModel =
                 new ViewModelProvider(this).get(CartViewModel.class);
 
         binding = FragmentCartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        cartViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        // handle cart product listview
+        ListView productListView = (ListView) root.findViewById(R.id.cart_product_list);
+        CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
+        productListView.setAdapter(cartAdapter);
+
+
         return root;
     }
 

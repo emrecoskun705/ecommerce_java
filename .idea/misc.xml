@@ -3,10 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/drawable/cart_product_item_background.xml" value="1.41875" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/drawable/search_bar.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/drawable/shadow_bar.xml" value="0.2703125" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/drawable/shadow_box.xml" value="0.2703125" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/layout/cart_product.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/layout/fragment_cart.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/layout/fragment_home.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/umutc/StudioProjects/ecommerce_java/app/src/main/res/layout/product.xml" value="0.25416666666666665" />
       </map>
