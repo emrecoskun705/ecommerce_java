@@ -1,6 +1,7 @@
 package tr.com.emrecoskun.ecommerce_java.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -27,6 +29,7 @@ import java.util.List;
 import tr.com.emrecoskun.ecommerce_java.MainActivity;
 import tr.com.emrecoskun.ecommerce_java.Product;
 import tr.com.emrecoskun.ecommerce_java.ProductAdapter;
+import tr.com.emrecoskun.ecommerce_java.ProductDetailsActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentHomeBinding;
 
@@ -67,8 +70,21 @@ public class HomeFragment extends Fragment {
         // Product list and product adapter connection part
         ListView productListView = (ListView) root.findViewById(R.id.products);
         ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
-        Log.d("nulldegil adapter", productAdapter.toString());
+//        Log.d("nulldegil adapter", productAdapter.toString());
         productListView.setAdapter(productAdapter);
+
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Product product = productList.get(i);
+                Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+
+                //TODO: put the product in here
+                intent.putExtra("product", 2);
+                startActivity(intent);
+            }
+        });
+
 
         return root;
     }

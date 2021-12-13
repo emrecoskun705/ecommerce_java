@@ -18,6 +18,8 @@ import androidx.core.content.ContextCompat;
 import java.io.InputStream;
 import java.util.List;
 
+import tr.com.emrecoskun.ecommerce_java.utils.DownloadImageTask;
+
 public class ProductAdapter extends BaseAdapter {
 
     List<Product> productList;
@@ -51,7 +53,6 @@ public class ProductAdapter extends BaseAdapter {
         TextView txtName = (TextView) productView.findViewById(R.id.productName);
         TextView txtPrice = (TextView) productView.findViewById(R.id.productPrice);
         ImageView imageView = (ImageView) productView.findViewById(R.id.productImage);
-
         Product product = productList.get(i);
         txtName.setText(product.getName());
         txtPrice.setText(product.getPrice() + "");
@@ -61,31 +62,6 @@ public class ProductAdapter extends BaseAdapter {
                 .execute(product.getImageUrl());
 
         return productView;
-    }
-    // This class add image
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 }
 
