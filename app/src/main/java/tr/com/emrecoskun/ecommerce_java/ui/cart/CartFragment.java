@@ -1,9 +1,11 @@
 package tr.com.emrecoskun.ecommerce_java.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import tr.com.emrecoskun.ecommerce_java.CheckoutActivity;
+import tr.com.emrecoskun.ecommerce_java.ProductDetailsActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.adapters.CartAdapter;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentCartBinding;
@@ -48,6 +52,17 @@ public class CartFragment extends Fragment {
         ListView productListView = (ListView) root.findViewById(R.id.cart_product_list);
         CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
         productListView.setAdapter(cartAdapter);
+
+        Button buyButton = (Button) root.findViewById(R.id.cart_buy_button);
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CheckoutActivity.class);
+                //TODO: put the cart info in here
+                intent.putExtra("cart", 2);
+                startActivity(intent);
+            }
+        });
 
 
         return root;
