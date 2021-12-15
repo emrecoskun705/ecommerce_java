@@ -50,7 +50,9 @@ public class ProductAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) productView.findViewById(R.id.productImage);
         Product product = productList.get(i);
         txtName.setText(product.getName());
-        txtPrice.setText(product.getPrice() + "");
+        txtPrice.setText(product.getPrice() + "$");
+        // default loading image
+        imageView.setImageResource(R.mipmap.loading);
 //        imageView.setImageBitmap(product.getImage());
 
         new DownloadImageTask((ImageView) imageView)
@@ -59,10 +61,3 @@ public class ProductAdapter extends BaseAdapter {
         return productView;
     }
 }
-
-
-
-
-
-
-

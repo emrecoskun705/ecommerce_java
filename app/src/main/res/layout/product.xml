@@ -9,8 +9,9 @@
 
     <ImageView
         android:id="@+id/productImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         tools:srcCompat="@tools:sample/avatars" />
