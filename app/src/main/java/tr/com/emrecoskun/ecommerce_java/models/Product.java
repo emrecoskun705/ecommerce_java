@@ -3,11 +3,11 @@ package tr.com.emrecoskun.ecommerce_java.models;
 import android.graphics.Bitmap;
 
 public class Product {
-    //TODO: Remove bitmap if it is still redundant later
     private Bitmap image;
     private String imageUrl;
     private String name;
     private double price;
+    private String description;
 
     public Product(String imageUrl, String name, double price) {
         this.imageUrl = imageUrl;
@@ -45,5 +45,22 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

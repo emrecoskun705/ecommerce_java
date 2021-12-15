@@ -1,7 +1,9 @@
 package tr.com.emrecoskun.ecommerce_java.ui.home;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import tr.com.emrecoskun.ecommerce_java.models.Product;
 import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
@@ -33,13 +43,11 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         //TODO: Remove these, it is only for testing
-        productList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        productList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        productList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        productList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
 
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -60,6 +68,33 @@ public class HomeFragment extends Fragment {
         ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
 //        Log.d("nulldegil adapter", productAdapter.toString());
         productListView.setAdapter(productAdapter);
+
+
+        firestore.collection("products").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    // get data
+                    Map<String, Object> data = doc.getData();
+                    Product newProduct = new Product((String) data.get("imageUrl"), (String) data.get("name"), (double) data.get("price"));
+                    newProduct.setDescription((String) data.get("image"));
+
+                    // get image
+                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            newProduct.setImageUrl(uri.toString());
+                            productList.add(newProduct);
+                            ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
+                            productListView.setAdapter(productAdapter);
+
+                        }
+                    });
+
+
+                }
+            }
+        });
 
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

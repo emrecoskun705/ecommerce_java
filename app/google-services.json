@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "697168954473",
+    "project_id": "umemcommerce",
+    "storage_bucket": "umemcommerce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697168954473:android:52e3a6fb8ed019e6764ef8",
+        "android_client_info": {
+          "package_name": "tr.com.emrecoskun.ecommerce_java"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697168954473-ktu101vt0nm52nila19fruug4ss6938i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRes72XLC3X1Eb6KRHPg_Ba2ybB1PVSHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697168954473-ktu101vt0nm52nila19fruug4ss6938i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
