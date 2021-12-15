@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -16,6 +18,8 @@ import tr.com.emrecoskun.ecommerce_java.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth firebaseAuth;
+
     private ActivityMainBinding binding;
     private boolean isLoggedIn = false;
 
@@ -23,9 +27,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // check the intent from authentication activity if user is logged in
-        if(getIntent().hasExtra("isLoggedIn")) {
-            isLoggedIn = getIntent().getBooleanExtra("isLoggedIn", false);
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if(currentUser != null) {
+            isLoggedIn = true;
+        } else {
+            isLoggedIn = false;
+
+            // check the intent from authentication activity if user is logged in
+            if(getIntent().hasExtra("isLoggedIn")) {
+                isLoggedIn = getIntent().getBooleanExtra("isLoggedIn", false);
+            }
         }
 
         if(!isLoggedIn) {
