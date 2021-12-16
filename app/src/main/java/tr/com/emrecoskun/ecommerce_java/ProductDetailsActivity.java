@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -69,6 +70,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     Product newProduct = new Product((String) task.getResult().get("imageUrl"), (String) task.getResult().get("name"), (double) task.getResult().get("price"));
                     newProduct.setDescription((String) task.getResult().get("description"));
                     newProduct.setProductId(productId);
+                    // default loading image
+                    imageView.setImageResource(R.mipmap.loading);
 
                     // get image
                     storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -114,6 +117,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             data.put("products", productIdList);
                             reference.update("products", FieldValue.arrayUnion(productId));
                         }
+                        Toast.makeText(ProductDetailsActivity.this, "Product added to cart",
+                                Toast.LENGTH_SHORT).show();
 
                     }
                 });

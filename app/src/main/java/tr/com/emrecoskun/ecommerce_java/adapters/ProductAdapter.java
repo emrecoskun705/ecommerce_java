@@ -53,7 +53,6 @@ public class ProductAdapter extends BaseAdapter {
         txtPrice.setText(product.getPrice() + "$");
         // default loading image
         imageView.setImageResource(R.mipmap.loading);
-//        imageView.setImageBitmap(product.getImage());
 
         new DownloadImageTask((ImageView) imageView)
                 .execute(product.getImageUrl());

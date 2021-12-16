@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,11 @@ public class CartFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        cartViewModel =
+                new ViewModelProvider(this).get(CartViewModel.class);
+
+        binding = FragmentCartBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -62,59 +68,62 @@ public class CartFragment extends Fragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-
-        cartViewModel =
-                new ViewModelProvider(this).get(CartViewModel.class);
-
-        binding = FragmentCartBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         // handle cart product listview
         ListView productListView = (ListView) root.findViewById(R.id.cart_product_list);
         TextView totalPrice = (TextView) root.findViewById(R.id.cart_total_price);
+        Button buyButton = (Button) root.findViewById(R.id.cart_buy_button);
+        buyButton.setVisibility(View.INVISIBLE);
 
         // get cart products for user
         firestore.collection("carts").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()) {
-                    for(String i :(ArrayList<String>) task.getResult().get("products")) {
-                        firestore.collection("products").document(i).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()) {
-                                    Map<String, Object> data = task.getResult().getData();
-                                    Product newProduct = new Product((String) data.get("imageUrl"), (String) data.get("name"), (double) data.get("price"));
-                                    newProduct.setDescription((String) data.get("image"));
-                                    newProduct.setProductId((String) task.getResult().getId());
+                if (task.isSuccessful()) {
+                    if ((ArrayList<String>) task.getResult().get("products") != null) {
+                        for (String i : (ArrayList<String>) task.getResult().get("products")) {
+                            buyButton.setVisibility(View.VISIBLE);
+                            firestore.collection("products").document(i).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        Map<String, Object> data = task.getResult().getData();
+                                        Product newProduct = new Product((String) data.get("imageUrl"), (String) data.get("name"), (double) data.get("price"));
+                                        newProduct.setDescription((String) data.get("image"));
+                                        newProduct.setProductId((String) task.getResult().getId());
 
-                                    // set total price text
-                                    cartTotalPrice += (double) data.get("price");
-                                    totalPrice.setText("Total Price: " + String.format("%.2f",cartTotalPrice)  + "$");
+                                        // set total price text
+                                        cartTotalPrice += (double) data.get("price");
+                                        totalPrice.setText("Total Price: " + String.format("%.2f", cartTotalPrice) + "$");
 
-                                    // get image
-                                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            newProduct.setImageUrl(uri.toString());
-                                            cartProductList.add(newProduct);
-                                            CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
-                                            productListView.setAdapter(cartAdapter);
-                                        }
-                                    });
+                                        // get image
+                                        storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                newProduct.setImageUrl(uri.toString());
+                                                cartProductList.add(newProduct);
+                                                // to fix exception of changing tabs
+                                                if (getActivity() != null) {
+                                                    CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
+                                                    productListView.setAdapter(cartAdapter);
+                                                }
+
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Your cart is empty.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
 
-        Button buyButton = (Button) root.findViewById(R.id.cart_buy_button);
+
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

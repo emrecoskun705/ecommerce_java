@@ -42,17 +42,18 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        homeViewModel =
+                new ViewModelProvider(this).get(HomeViewModel.class);
+
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference();
 
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         /*final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -85,8 +86,12 @@ public class HomeFragment extends Fragment {
                         public void onSuccess(Uri uri) {
                             newProduct.setImageUrl(uri.toString());
                             productList.add(newProduct);
-                            ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
-                            productListView.setAdapter(productAdapter);
+                            // to fix exception of changing tabs
+                            if(getActivity() != null) {
+                                ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
+                                productListView.setAdapter(productAdapter);
+                            }
+
 
                         }
                     });

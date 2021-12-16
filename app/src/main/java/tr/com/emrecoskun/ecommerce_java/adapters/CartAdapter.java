@@ -52,7 +52,9 @@ public class CartAdapter extends BaseAdapter {
 
         productName.setText(product.getName());
         productPrice.setText(product.getPrice() + "$");
-//        imageView.setImageBitmap(product.getImage());
+
+        // default loading image
+        productImage.setImageResource(R.mipmap.loading);
 
         new DownloadImageTask((ImageView) productImage)
                 .execute(product.getImageUrl());
