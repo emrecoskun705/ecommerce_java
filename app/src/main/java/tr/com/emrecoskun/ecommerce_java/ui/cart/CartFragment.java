@@ -1,7 +1,9 @@
 package tr.com.emrecoskun.ecommerce_java.ui.cart;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +17,28 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tr.com.emrecoskun.ecommerce_java.CheckoutActivity;
 import tr.com.emrecoskun.ecommerce_java.ProductDetailsActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.adapters.CartAdapter;
+import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentCartBinding;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
 
@@ -32,15 +49,23 @@ public class CartFragment extends Fragment {
 
     private List<Product> cartProductList = new ArrayList<>();
 
+    double cartTotalPrice = 0;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
-        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
+//        cartProductList.add(new Product("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone11-black-select-2019_GEO_EMEA?wid=470&hei=556&fmt=png-alpha&.v=1567021766023", "Product name", 34.3));
 
         cartViewModel =
                 new ViewModelProvider(this).get(CartViewModel.class);
@@ -50,8 +75,44 @@ public class CartFragment extends Fragment {
 
         // handle cart product listview
         ListView productListView = (ListView) root.findViewById(R.id.cart_product_list);
-        CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
-        productListView.setAdapter(cartAdapter);
+        TextView totalPrice = (TextView) root.findViewById(R.id.cart_total_price);
+
+        // get cart products for user
+        firestore.collection("carts").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(String i :(ArrayList<String>) task.getResult().get("products")) {
+                        firestore.collection("products").document(i).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    Map<String, Object> data = task.getResult().getData();
+                                    Product newProduct = new Product((String) data.get("imageUrl"), (String) data.get("name"), (double) data.get("price"));
+                                    newProduct.setDescription((String) data.get("image"));
+                                    newProduct.setProductId((String) task.getResult().getId());
+
+                                    // set total price text
+                                    cartTotalPrice += (double) data.get("price");
+                                    totalPrice.setText("Total Price: " + String.format("%.2f",cartTotalPrice)  + "$");
+
+                                    // get image
+                                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            newProduct.setImageUrl(uri.toString());
+                                            cartProductList.add(newProduct);
+                                            CartAdapter cartAdapter = new CartAdapter(getActivity(), cartProductList);
+                                            productListView.setAdapter(cartAdapter);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
 
         Button buyButton = (Button) root.findViewById(R.id.cart_buy_button);
         buyButton.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +124,6 @@ public class CartFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
 
         return root;
     }

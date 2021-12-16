@@ -51,7 +51,7 @@ public class CartAdapter extends BaseAdapter {
         Product product = productList.get(i);
 
         productName.setText(product.getName());
-        productPrice.setText(product.getPrice() + "");
+        productPrice.setText(product.getPrice() + "$");
 //        imageView.setImageBitmap(product.getImage());
 
         new DownloadImageTask((ImageView) productImage)
