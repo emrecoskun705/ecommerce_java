@@ -16,12 +16,22 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
@@ -40,6 +50,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference();
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
         TextView productName =(TextView) findViewById(R.id.details_productName);
         ImageView imageView =(ImageView) findViewById(R.id.details_productImage);
         TextView productDescription =(TextView) findViewById(R.id.details_description);
@@ -48,40 +61,68 @@ public class ProductDetailsActivity extends AppCompatActivity {
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
 
-        if(getIntent().hasExtra("productId")) {
-            String productId = getIntent().getStringExtra("productId");
-            firestore.collection("products").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()) {
-                        Product newProduct = new Product((String) task.getResult().get("imageUrl"), (String) task.getResult().get("name"), (double) task.getResult().get("price"));
-                        newProduct.setDescription((String) task.getResult().get("description"));
-                        newProduct.setProductId(productId);
+        String productId = getIntent().getStringExtra("productId");
+        firestore.collection("products").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Product newProduct = new Product((String) task.getResult().get("imageUrl"), (String) task.getResult().get("name"), (double) task.getResult().get("price"));
+                    newProduct.setDescription((String) task.getResult().get("description"));
+                    newProduct.setProductId(productId);
 
-                        // get image
-                        storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                newProduct.setImageUrl(uri.toString());
-                                new DownloadImageTask((ImageView) imageView)
-                                        .execute(newProduct.getImageUrl());
-                            }
-                        });
+                    // get image
+                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            newProduct.setImageUrl(uri.toString());
+                            new DownloadImageTask((ImageView) imageView)
+                                    .execute(newProduct.getImageUrl());
+                        }
+                    });
 
-                        productName.setText(newProduct.getName());
-                        productDescription.setText(newProduct.getDescription());
-                        productPrice.setText(newProduct.getPrice() + "$");
-                        actionBar.setTitle(newProduct.getName());
-                    }
+                    productName.setText(newProduct.getName());
+                    productDescription.setText(newProduct.getDescription());
+                    productPrice.setText(newProduct.getPrice() + "$");
+                    actionBar.setTitle(newProduct.getName());
                 }
-            });
-        }
+            }
+        });
 
         Button cartButton = findViewById(R.id.addToCart);
         cartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: implement add to cart functionality
+
+                String userId = currentUser.getUid();
+
+                DocumentReference reference = firestore.collection("carts").document(userId);
+
+                Map<String, Object> data = new HashMap<>();
+
+
+                reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        List<String> productIdList = (ArrayList<String>) task.getResult().get("products");
+                        if(productIdList == null) {
+                            List<String> list = new ArrayList<>();
+                            list.add(productId);
+                            data.put("products", list);
+                            reference.set(data);
+                        } else {
+
+                            data.put("products", productIdList);
+                            reference.update("products", FieldValue.arrayUnion(productId));
+                        }
+
+                    }
+                });
+
+
+
+
+
+
             }
         });
 
