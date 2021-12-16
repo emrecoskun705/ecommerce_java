@@ -3,6 +3,7 @@ package tr.com.emrecoskun.ecommerce_java.models;
 import android.graphics.Bitmap;
 
 public class Product {
+    private String productId;
     private Bitmap image;
     private String imageUrl;
     private String name;
@@ -53,6 +54,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     @Override

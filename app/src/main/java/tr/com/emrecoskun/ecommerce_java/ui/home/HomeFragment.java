@@ -42,7 +42,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        //TODO: Remove these, it is only for testing
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -78,6 +77,7 @@ public class HomeFragment extends Fragment {
                     Map<String, Object> data = doc.getData();
                     Product newProduct = new Product((String) data.get("imageUrl"), (String) data.get("name"), (double) data.get("price"));
                     newProduct.setDescription((String) data.get("image"));
+                    newProduct.setProductId((String) doc.getId());
 
                     // get image
                     storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -102,8 +102,7 @@ public class HomeFragment extends Fragment {
                 Product product = productList.get(i);
                 Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
 
-                //TODO: put the product in here
-                intent.putExtra("product", 2);
+                intent.putExtra("productId", product.getProductId());
                 startActivity(intent);
             }
         });
