@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tr.com.emrecoskun.ecommerce_java.SearchActivity;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
 import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.ProductDetailsActivity;
@@ -62,6 +67,20 @@ public class HomeFragment extends Fragment {
                 textView.setText(s);
             }
         });*/
+
+        EditText searchBar = (EditText) root.findViewById(R.id.searchBar);
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i ==  EditorInfo.IME_ACTION_SEARCH) {
+                    Intent intent = new Intent(getActivity(), SearchActivity.class);
+                    intent.putExtra("searchBy", searchBar.getText().toString());
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Product list and product adapter connection part
         ListView productListView = (ListView) root.findViewById(R.id.products);
