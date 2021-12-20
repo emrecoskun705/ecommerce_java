@@ -18,18 +18,20 @@ import com.google.firebase.storage.StorageReference;
 
 public class CheckoutActivity extends AppCompatActivity {
 
+    // needed firebase objects
+    FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference();
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        // initialize firebase
+        initializeFirebase();
 
 
         Button checkoutButton = findViewById(R.id.checkoutButton);
@@ -49,6 +51,15 @@ public class CheckoutActivity extends AppCompatActivity {
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
+
+    private void initializeFirebase() {
+        firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

@@ -41,6 +41,15 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
 
+    //firebase classes
+    FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
+
+    //views
+    EditText searchBar;
+    ListView productListView;
+
     private List<Product> productList = new ArrayList<>();
 
 
@@ -53,42 +62,41 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference();
-
+        firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
 
 
-        /*final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
-
-        EditText searchBar = (EditText) root.findViewById(R.id.searchBar);
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i ==  EditorInfo.IME_ACTION_SEARCH) {
-                    Intent intent = new Intent(getActivity(), SearchActivity.class);
-                    intent.putExtra("searchBy", searchBar.getText().toString());
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
-            }
-        });
+        searchBar = (EditText) root.findViewById(R.id.searchBar);
+        // add search functionality
+        searchProduct();
 
         // Product list and product adapter connection part
-        ListView productListView = (ListView) root.findViewById(R.id.products);
+        productListView = (ListView) root.findViewById(R.id.products);
         ProductAdapter productAdapter = new ProductAdapter(getActivity(), productList);
 //        Log.d("nulldegil adapter", productAdapter.toString());
         productListView.setAdapter(productAdapter);
 
+        //get products
+        getProducts();
 
+        // when click a product show its detail page
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Product product = productList.get(i);
+                Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+
+                intent.putExtra("productId", product.getProductId());
+                startActivity(intent);
+            }
+        });
+
+
+        return root;
+    }
+
+    private void getProducts() {
         firestore.collection("products").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -119,20 +127,21 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
 
-        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void searchProduct() {
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Product product = productList.get(i);
-                Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-
-                intent.putExtra("productId", product.getProductId());
-                startActivity(intent);
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i ==  EditorInfo.IME_ACTION_SEARCH) {
+                    Intent intent = new Intent(getActivity(), SearchActivity.class);
+                    intent.putExtra("searchBy", searchBar.getText().toString());
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
             }
         });
-
-
-        return root;
     }
 
     @Override

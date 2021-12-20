@@ -40,56 +40,41 @@ import tr.com.emrecoskun.ecommerce_java.utils.DownloadImageTask;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
+    // Firebase objects that is needed
+    FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
+
+    //views for product detail
+    TextView productName;
+    ImageView imageView;
+    TextView productDescription;
+    TextView productPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        // initialize all firebase functionality for this class
+        initializeFirebase();
 
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference();
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        TextView productName =(TextView) findViewById(R.id.details_productName);
-        ImageView imageView =(ImageView) findViewById(R.id.details_productImage);
-        TextView productDescription =(TextView) findViewById(R.id.details_description);
-        TextView productPrice =(TextView) findViewById(R.id.details_productPrice);
+        // get needed views
+        productName =(TextView) findViewById(R.id.details_productName);
+        imageView =(ImageView) findViewById(R.id.details_productImage);
+        productDescription =(TextView) findViewById(R.id.details_description);
+        productPrice =(TextView) findViewById(R.id.details_productPrice);
 
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
 
         String productId = getIntent().getStringExtra("productId");
-        firestore.collection("products").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()) {
-                    Product newProduct = new Product((String) task.getResult().get("imageUrl"), (String) task.getResult().get("name"), (double) task.getResult().get("price"));
-                    newProduct.setDescription((String) task.getResult().get("description"));
-                    newProduct.setProductId(productId);
-                    // default loading image
-                    imageView.setImageResource(R.mipmap.loading);
 
-                    // get image
-                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            newProduct.setImageUrl(uri.toString());
-                            new DownloadImageTask((ImageView) imageView)
-                                    .execute(newProduct.getImageUrl());
-                        }
-                    });
+        getProductDetailByID(productId, actionBar);
 
-                    productName.setText(newProduct.getName());
-                    productDescription.setText(newProduct.getDescription());
-                    productPrice.setText(newProduct.getPrice() + "$");
-                    actionBar.setTitle(newProduct.getName());
-                }
-            }
-        });
+
 
         Button cartButton = findViewById(R.id.addToCart);
         cartButton.setOnClickListener(new View.OnClickListener() {
@@ -123,11 +108,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
-
-
             }
         });
 
@@ -137,6 +117,44 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void getProductDetailByID(String productId, ActionBar actionBar) {
+        firestore.collection("products").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Product newProduct = new Product((String) task.getResult().get("imageUrl"), (String) task.getResult().get("name"), (double) task.getResult().get("price"));
+                    newProduct.setDescription((String) task.getResult().get("description"));
+                    newProduct.setProductId(productId);
+                    // default loading image
+                    imageView.setImageResource(R.mipmap.loading);
+
+                    // get image
+                    storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            newProduct.setImageUrl(uri.toString());
+                            new DownloadImageTask((ImageView) imageView)
+                                    .execute(newProduct.getImageUrl());
+                        }
+                    });
+
+                    productName.setText(newProduct.getName());
+                    productDescription.setText(newProduct.getDescription());
+                    productPrice.setText(newProduct.getPrice() + "$");
+                    actionBar.setTitle(newProduct.getName());
+                }
+            }
+        });
+    }
+
+    private void initializeFirebase() {
+        firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
     }
 
     @Override

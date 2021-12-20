@@ -61,28 +61,36 @@ public class SignupFragment extends Fragment {
         view.findViewById(R.id.signupButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("button", "button is clicked");
-                if(password.getText().toString().equals(confirmPassword.getText().toString())) {
-                    Log.d("equal password", "task is running");
-                    firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(
-                            getActivity(), new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
-                                    Log.d("task", "task is running");
-                                    if(task.isSuccessful()) {
-                                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                                        // prevent going back to this activity
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        intent.putExtra("isLoggedIn", true);
-                                        startActivity(intent);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
+                if(email.getText().toString().equals("") || password.getText().toString().equals("") || confirmPassword.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if(password.getText().toString().equals(confirmPassword.getText().toString())) {
+                        firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(
+                                getActivity(), new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
+                                        Log.d("task", "task is running");
+                                        if(task.isSuccessful()) {
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            // prevent going back to this activity
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent.putExtra("isLoggedIn", true);
+                                            startActivity(intent);
+                                        } else {
+                                            Toast.makeText(getActivity(), "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
-                            }
-                    );
+                        );
+                    } else {
+                        Toast.makeText(getActivity(), "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
+
+
             }
         });
 

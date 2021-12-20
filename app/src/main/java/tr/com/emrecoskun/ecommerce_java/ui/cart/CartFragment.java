@@ -48,6 +48,18 @@ public class CartFragment extends Fragment {
     private CartViewModel cartViewModel;
     private FragmentCartBinding binding;
 
+    //firebase classes
+    FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
+
+    // view classes
+    ListView productListView;
+    TextView totalPrice;
+    Button buyButton;
+
     private List<Product> cartProductList = new ArrayList<>();
 
     double cartTotalPrice = 0;
@@ -59,22 +71,31 @@ public class CartFragment extends Fragment {
 
         binding = FragmentCartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        // initialize firebase
+        initializeFirebase();
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference();
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-
-        // handle cart product listview
-        ListView productListView = (ListView) root.findViewById(R.id.cart_product_list);
-        TextView totalPrice = (TextView) root.findViewById(R.id.cart_total_price);
-        Button buyButton = (Button) root.findViewById(R.id.cart_buy_button);
+        // find views
+        productListView = (ListView) root.findViewById(R.id.cart_product_list);
+        totalPrice = (TextView) root.findViewById(R.id.cart_total_price);
+        buyButton = (Button) root.findViewById(R.id.cart_buy_button);
         buyButton.setVisibility(View.INVISIBLE);
 
+        // get cart product list for current user
+        getCartProductList();
+
+        // when click buy button show checkout screen
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        return root;
+    }
+
+    private void getCartProductList() {
         // get cart products for user
         firestore.collection("carts").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -122,19 +143,18 @@ public class CartFragment extends Fragment {
                 }
             }
         });
+    }
 
+    private void initializeFirebase() {
+        //get firestore
+        firestore = FirebaseFirestore.getInstance();
 
-        buyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CheckoutActivity.class);
-                //TODO: put the cart info in here
-                intent.putExtra("cart", 2);
-                startActivity(intent);
-            }
-        });
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
 
-        return root;
+        firebaseAuth = FirebaseAuth.getInstance();
+        //get current user
+        currentUser = firebaseAuth.getCurrentUser();
     }
 
     @Override
