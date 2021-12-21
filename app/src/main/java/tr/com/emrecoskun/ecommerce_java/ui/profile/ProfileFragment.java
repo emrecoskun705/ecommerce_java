@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import tr.com.emrecoskun.ecommerce_java.AuthenticationActivity;
+import tr.com.emrecoskun.ecommerce_java.ChangePasswordActivity;
 import tr.com.emrecoskun.ecommerce_java.MainActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentProfileBinding;
@@ -32,6 +33,14 @@ public class ProfileFragment extends Fragment {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        root.findViewById(R.id.passwordButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         root.findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
             @Override
