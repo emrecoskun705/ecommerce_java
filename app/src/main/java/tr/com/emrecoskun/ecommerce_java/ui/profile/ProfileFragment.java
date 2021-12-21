@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import tr.com.emrecoskun.ecommerce_java.AuthenticationActivity;
+import tr.com.emrecoskun.ecommerce_java.ChangeEmailActivity;
 import tr.com.emrecoskun.ecommerce_java.ChangePasswordActivity;
 import tr.com.emrecoskun.ecommerce_java.MainActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
@@ -38,6 +39,14 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        root.findViewById(R.id.emailButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangeEmailActivity.class);
                 startActivity(intent);
             }
         });

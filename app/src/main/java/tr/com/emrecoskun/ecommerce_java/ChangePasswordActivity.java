@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,6 +69,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                     if(task.isSuccessful()) {
                                         Toast.makeText(ChangePasswordActivity.this, "Password is changed",
                                                 Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(ChangePasswordActivity.this, MainActivity.class);
+                                        // prevent going back to this activity
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
                                     } else {
                                         Toast.makeText(ChangePasswordActivity.this, "Please check your fields.",
                                                 Toast.LENGTH_SHORT).show();
