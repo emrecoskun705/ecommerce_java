@@ -37,7 +37,7 @@ import java.util.Map;
 import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
 import tr.com.emrecoskun.ecommerce_java.utils.DownloadImageTask;
-
+//emre
 public class ProductDetailsActivity extends AppCompatActivity {
 
     // Firebase objects that is needed

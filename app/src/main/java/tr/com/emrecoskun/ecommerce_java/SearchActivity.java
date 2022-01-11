@@ -37,6 +37,7 @@ public class SearchActivity extends AppCompatActivity {
 
     int productCount = 0;
 
+    // umut
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +47,13 @@ public class SearchActivity extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
 
+        // take extra from home fragment
         String searchBy = getIntent().getStringExtra("searchBy");
 
         // Product list and product adapter connection part
         ListView productListView = (ListView) findViewById(R.id.searchProductList);
         TextView foundProductText = (TextView) findViewById(R.id.foundProduct);
+
         ProductAdapter productAdapter = new ProductAdapter(this, productList);
         productListView.setAdapter(productAdapter);
 
@@ -102,6 +105,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
                         // get image
+                        // emre
                         storageReference.child(newProduct.getImageUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
@@ -128,6 +132,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    // emre
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

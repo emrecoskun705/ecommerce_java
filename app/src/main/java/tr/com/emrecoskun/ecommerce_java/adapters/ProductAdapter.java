@@ -14,7 +14,7 @@ import java.util.List;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
 import tr.com.emrecoskun.ecommerce_java.utils.DownloadImageTask;
-
+//emre
 public class ProductAdapter extends BaseAdapter {
 
     List<Product> productList;

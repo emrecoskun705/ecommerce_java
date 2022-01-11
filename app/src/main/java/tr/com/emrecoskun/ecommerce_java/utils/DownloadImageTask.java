@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.InputStream;
-
+//emre
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 

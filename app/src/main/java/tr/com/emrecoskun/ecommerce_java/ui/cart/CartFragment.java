@@ -42,7 +42,7 @@ import tr.com.emrecoskun.ecommerce_java.adapters.CartAdapter;
 import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentCartBinding;
 import tr.com.emrecoskun.ecommerce_java.models.Product;
-
+//emre
 public class CartFragment extends Fragment {
 
     private CartViewModel cartViewModel;

@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+//umut
 public class CheckoutActivity extends AppCompatActivity {
 
     // needed firebase objects
@@ -68,7 +69,7 @@ public class CheckoutActivity extends AppCompatActivity {
         currentUser = firebaseAuth.getCurrentUser();
     }
 
-
+    //emre
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

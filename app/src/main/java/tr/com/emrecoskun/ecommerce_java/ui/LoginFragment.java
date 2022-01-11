@@ -29,6 +29,7 @@ import tr.com.emrecoskun.ecommerce_java.R;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+//umut
 public class LoginFragment extends Fragment {
 
     public static LoginFragment newInstance() {

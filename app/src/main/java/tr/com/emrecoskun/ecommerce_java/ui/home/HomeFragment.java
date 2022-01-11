@@ -35,7 +35,7 @@ import tr.com.emrecoskun.ecommerce_java.adapters.ProductAdapter;
 import tr.com.emrecoskun.ecommerce_java.ProductDetailsActivity;
 import tr.com.emrecoskun.ecommerce_java.R;
 import tr.com.emrecoskun.ecommerce_java.databinding.FragmentHomeBinding;
-
+//emre
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -96,6 +96,7 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    //emre
     private void getProducts() {
         firestore.collection("products").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -129,12 +130,14 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    //umut
     private void searchProduct() {
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if(i ==  EditorInfo.IME_ACTION_SEARCH) {
                     Intent intent = new Intent(getActivity(), SearchActivity.class);
+                    // give information to search activity
                     intent.putExtra("searchBy", searchBar.getText().toString());
                     startActivity(intent);
                     return true;

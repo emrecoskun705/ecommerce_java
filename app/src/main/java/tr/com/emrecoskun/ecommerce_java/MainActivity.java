@@ -16,6 +16,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import tr.com.emrecoskun.ecommerce_java.databinding.ActivityMainBinding;
 
+//emre
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;

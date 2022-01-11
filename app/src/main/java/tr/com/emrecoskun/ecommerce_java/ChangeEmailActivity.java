@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.jetbrains.annotations.NotNull;
 
 public class ChangeEmailActivity extends AppCompatActivity {
-
+    //umut
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +57,7 @@ public class ChangeEmailActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Get auth credentials from the user for re-authentication
+                // Get auth credentials from the user for re-authentication for checking password
                 AuthCredential credential = EmailAuthProvider
                         .getCredential(email, password);
 

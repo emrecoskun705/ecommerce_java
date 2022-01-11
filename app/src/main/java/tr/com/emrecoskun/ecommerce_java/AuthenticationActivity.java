@@ -10,23 +10,16 @@ import tr.com.emrecoskun.ecommerce_java.ui.SignupFragment;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
-    private boolean loginPage = true;
 
+    // umut
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        if (loginPage){
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.container, LoginFragment.newInstance(),"login");
-            ft.commit();
-        }else{
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.container, LoginFragment.newInstance(),"login");
+        ft.commit();
 
-            ft.replace(R.id.container, SignupFragment.newInstance());
-            ft.addToBackStack(null);
-            ft.commit();
-        }
     }
 }
